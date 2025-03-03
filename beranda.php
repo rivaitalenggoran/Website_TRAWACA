@@ -1,26 +1,85 @@
 <?php
-global $conn;
+// Memulai session
+session_start();
+
 include 'config/database.php';
 
-$resulttentang = $conn->query("SELECT * FROM beranda");
-$tentang = $resulttentang->fetch_assoc();
+// Gunakan PDO untuk semua query jika konsisten
+$queryBeranda = "SELECT * FROM beranda";
+$stmtBeranda = $pdo->query($queryBeranda);
+$tentang = $stmtBeranda->fetch(PDO::FETCH_ASSOC);
 
-$resultprofil = $conn->query("SELECT nama_peneliti,bidang_minat FROM profil_peneliti");
+// Ambil data lainnya
+$queryProfil = "SELECT nama_peneliti, bidang_minat FROM profil_peneliti";
+$stmtProfil = $pdo->query($queryProfil);
 
-$resultkontributor = $conn->query("SELECT * FROM kontributor");
+$queryKontributor = "SELECT * FROM kontributor";
+$stmtKontributor = $pdo->query($queryKontributor);
 
-$resultkontak = $conn->query("SELECT * FROM kontak_trawaca");
+$queryKontak = "SELECT * FROM kontak_trawaca";
+$stmtKontak = $pdo->query($queryKontak);
 
-$resultkegiatan = $conn->query("SELECT * FROM kegiatan");
+$queryKegiatan = "SELECT * FROM kegiatan";
+$stmtKegiatan = $pdo->query($queryKegiatan);
 
-$resultsahabat = $conn->query("SELECT * FROM sahabat_trawaca");
+$querySahabat = "SELECT * FROM sahabat_trawaca";
+$stmtSahabat = $pdo->query($querySahabat);
+
+// Cek apakah ada request untuk mengganti bahasa
+if (isset($_GET['lang'])) {
+    $_SESSION['lang'] = $_GET['lang'];
+}
+
+// Default bahasa = Indonesia jika belum ada sesi bahasa yang dipilih
+$lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'id';
+
+// Ambil teks untuk bagian header_1
+$query = "SELECT header, sub_header 
+        FROM beranda_translation 
+        WHERE language_code = :lang AND section_name = 'header_1'";
+$stmt = $pdo->prepare($query);
+$stmt->execute(['lang' => $lang]);
+$header1 = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Ambil teks untuk bagian header_2
+$query = "SELECT header, sub_header 
+        FROM beranda_translation 
+        WHERE language_code = :lang AND section_name = 'header_2'";
+$stmt = $pdo->prepare($query);
+$stmt->execute(['lang' => $lang]);
+$header2 = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Ambil teks untuk bagian header_3
+$query = "SELECT header, sub_header 
+        FROM beranda_translation 
+        WHERE language_code = :lang AND section_name = 'header_3'";
+$stmt = $pdo->prepare($query);
+$stmt->execute(['lang' => $lang]);
+$header3 = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Ambil teks untuk bagian header_4
+$query = "SELECT header, sub_header 
+        FROM beranda_translation 
+        WHERE language_code = :lang AND section_name = 'header_4'";
+$stmt = $pdo->prepare($query);
+$stmt->execute(['lang' => $lang]);
+$header4 = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Ambil teks untuk bagian header_5
+$query = "SELECT header, sub_header 
+        FROM beranda_translation 
+        WHERE language_code = :lang AND section_name = 'header_5'";
+$stmt = $pdo->prepare($query);
+$stmt->execute(['lang' => $lang]);
+$header5 = $stmt->fetch(PDO::FETCH_ASSOC);
+
 
 ?>
 
 
 <!DOCTYPE html>
 <!-- saved from url=(0019)https://trawaca.id/ -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html lang="<?php echo $lang; ?>"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
@@ -67,14 +126,25 @@ $resultsahabat = $conn->query("SELECT * FROM sahabat_trawaca");
               <span class="cilik pupus">&nbsp;&nbsp;::: Purwarupa</span>
               <a class="dropdown-item" href="https://trawaca.id/hapusgbr">Pisahkan Ilustrasi Naskah</a>
             </div>    
-          </li><li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="https://trawaca.id/#" role="button" aria-haspopup="true" aria-expanded="false">Bahasa</a>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="https://trawaca.id/?lang=">Bahasa Indonesia</a>
-              <a class="dropdown-item" href="https://trawaca.id/?lang=jv">Basa Jawa</a>
-              <a class="dropdown-item" href="https://trawaca.id/?lang=en">English</a>
-              <a class="dropdown-item" href="https://trawaca.id/?lang=jv">ꦧꦱꦗꦮ</a>
-            </div>    
+          </li>
+          <li class="nav-item dropdown">
+
+
+          <!-- buat ini bob, navigasinya -->
+          <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+          Select Option
+          </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="beranda.php?lang=id">Indonesia</a></li>
+                <li><a class="dropdown-item" href="beranda.php?lang=en">English</a></li>
+                <li><a class="dropdown-item" href="#4">Jawa</a></li>
+              </ul>  
+
+
+
+
+
+
           </li>
         </ul>
       </div>
@@ -88,8 +158,8 @@ $resultsahabat = $conn->query("SELECT * FROM sahabat_trawaca");
           <img src="trawaca_bootstrap/trawaca_400_8.png" class="img-fluid mx-auto d-block">
         </div>
         <div class="col-md-6">
-          <h2 class="display-4 mt-5 mb-2" style="color:#E31245; text-shadow: 1px 2px 2px #777777;"><strong>Selamat Datang di<br>Situs Web TRAWACA</strong></h2>
-          <p class="lead mb-5">TRAWACA adalah sebuah tim yang peduli pada pelestarian budaya Indonesia, dengan fokus utama pada Aksara Jawa. Anda dapat berpartisipasi pada kegiatan-kegiatan TRAWACA, dengan mengikuti tautan yang tersedia pada halaman ini.</p>
+          <h2 class="display-4 mt-5 mb-2" style="color:#E31245; text-shadow: 1px 2px 2px #777777;"><?php echo $header1['header']; ?></h2>
+          <p class="lead mb-5"><?php echo $header1['sub_header']; ?></p>
         </div>
       </div>
     </div>
@@ -99,52 +169,52 @@ $resultsahabat = $conn->query("SELECT * FROM sahabat_trawaca");
   <div class="container">
     <div class="row">
       <div class="col-md-8 col-sm-12 mb-5">
-        <h2 style="color:#E31245; text-shadow: 1px 1px 1px #dddddd;">TENTANG TRAWACA</h2>
+        <h2 style="color:#E31245; text-shadow: 1px 1px 1px #dddddd;"><?php echo $header2['header']; ?></h2>
         <hr>
           <p><?= $tentang['tentang_trawaca'] ?></p>
       </div>
       <div class="col-md-4 col-sm-12 mb-5 sijisiji">
-        <h2 style="color:#E31245; text-shadow: 1px 1px 1px #dddddd;">Tim TRAWACA</h2>
+        <h2 style="color:#E31245; text-shadow: 1px 1px 1px #dddddd;"><?php echo $header3['header']; ?></h2>
         <hr>
-        <h4><b>Peneliti Utama</b></h4>
+        <h4><b><?php echo $header3['sub_header']; ?></b></h4>
         <p class="abuabu">
-            <?php while ($profil = $resultprofil->fetch_assoc()) { ?>
-                <strong><?= $profil['nama_peneliti']?></strong><br>
-                        <?= $profil['bidang_minat']?><br>
-            <?php } ?>
+        <?php while ($profil = $stmtProfil->fetch(PDO::FETCH_ASSOC)) { ?>
+            <strong><?= $profil['nama_peneliti'] ?></strong><br>
+            <?= $profil['bidang_minat'] ?><br>
+          <?php } ?>
         </p>
         <h4><b>Kontributor</b></h4>
         <p class="abuabu">
-            <?php while ($kontributor = $resultkontributor->fetch_assoc()) { ?>
-                <?= $kontributor['nama_kontributor']?><span class="cilik pupus"> :: <?= $kontributor['semester_kontributor']?></span><br>
-            <?php } ?>
+          <?php while ($kontributor = $stmtKontributor->fetch(PDO::FETCH_ASSOC)) { ?>
+            <?= $kontributor['nama_kontributor'] ?><span class="cilik pupus"> :: <?= $kontributor['semester_kontributor'] ?></span><br>
+          <?php } ?>
         </p>
         <strong>Kontak Kami</strong>
-          <?php while ($kontak= $resultkontak->fetch_assoc()) { ?>
-              <a href=<?= $kontak['link_kontak']?>><?= $kontak['nama_kontak']?></a><br>
-          <?php } ?>
+        <?php while ($kontak = $stmtKontak->fetch(PDO::FETCH_ASSOC)) { ?>
+          <a href=<?= $kontak['link_kontak'] ?>><?= $kontak['nama_kontak'] ?></a><br>
+        <?php } ?>
       </div>
     </div>
     <!-- /.row -->
     <div class="row">
       <div class="col-md-12 mt-2 mb-5">
-        <h2 style="color:#E31245; text-shadow: 1px 1px 1px #dddddd;">Kegiatan dan Luaran TRAWACA</h2>
+        <h2 style="color:#E31245; text-shadow: 1px 1px 1px #dddddd;"><?php echo $header4['header']; ?></h2>
           <hr>
-          <?php while ($kegiatan = $resultkegiatan->fetch_assoc()) { ?>
+          <?php while ($kegiatan = $stmtKegiatan->fetch(PDO::FETCH_ASSOC)) { ?>
           <div class="row">
-              <div class="col-md-4 mb-3">
-                  <div class="card h-100">
-                      <img class="card-img-top" src="<?= $kegiatan['gambar_kegiatan_luaran']?>" alt="">
-                      <div class="card-body">
-                          <h4 class="card-title"><?= $kegiatan['nama_kegiatan_luaran']?></h4>
-                          <p class="card-text siji abuabu"><?= $kegiatan['deskripsi_kegiatan_luaran']?></p>
-                          <p class="cilik"><?= $kegiatan['waktu_kegiatan_luaran']?></p>
-                      </div>
-                      <div class="card-footer">
-                          <a href="<?= $kegiatan['link_kegiatan_luaran']?>" class="btn btn-danger"><?= $kegiatan['nama_link']?></a>
-                      </div>
-                  </div>
+            <div class="col-md-4 mb-3">
+              <div class="card h-100">
+                <img class="card-img-top" src="<?= $kegiatan['gambar_kegiatan_luaran'] ?>" alt="">
+                <div class="card-body">
+                  <h4 class="card-title"><?= $kegiatan['nama_kegiatan_luaran'] ?></h4>
+                  <p class="card-text"><?= $kegiatan['deskripsi_kegiatan_luaran'] ?></p>
+                  <p class="cilik"><?= $kegiatan['waktu_kegiatan_luaran'] ?></p>
+                </div>
+                <div class="card-footer">
+                  <a href="<?= $kegiatan['link_kegiatan_luaran'] ?>" class="btn btn-danger"><?= $kegiatan['nama_link'] ?></a>
+                </div>
               </div>
+            </div>
           <?php } ?>
           <div class="col-md-4 mb-3">
             <div class="card h-100">
@@ -162,12 +232,12 @@ $resultsahabat = $conn->query("SELECT * FROM sahabat_trawaca");
 
     <div class="row">
       <div class="col-md-12 mb-5">
-        <h2 style="color:#E31245; text-shadow: 1px 1px 1px #dddddd;">Sahabat TRAWACA</h2>
+        <h2 style="color:#E31245; text-shadow: 1px 1px 1px #dddddd;"><?php echo $header5['header']; ?></h2>
         <hr>
         <p class="card-text sepasi">
-            <?php while ($sahabat = $resultsahabat->fetch_assoc()) { ?>
-                <?= $sahabat['nama_sahabat']?> |<span class="cilik"> <?= $sahabat['nama_waktu_kerjasama']?></span><br>
-            <?php } ?>
+        <?php while ($sahabat = $stmtSahabat->fetch(PDO::FETCH_ASSOC)) { ?>
+            <?= $sahabat['nama_sahabat'] ?> |<span class="cilik"> <?= $sahabat['nama_waktu_kerjasama'] ?></span><br>
+          <?php } ?>
         </p>
       </div>
     </div>
@@ -177,7 +247,7 @@ $resultsahabat = $conn->query("SELECT * FROM sahabat_trawaca");
   <!-- Footer -->
   <footer class="py-2 bg-dark">
     <div class="container">
-      <p class="m-0 text-center text-white siji">Copyright © Tim TRAWACA 2019</p>
+      <p class="m-0 text-center text-white siji">Copyright © Tim TRAWACA 2025</p>
     </div>
   </footer>
 
@@ -204,6 +274,4 @@ $resultsahabat = $conn->query("SELECT * FROM sahabat_trawaca");
     </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>
 
 <?php
-// Tutup koneksi database
-$conn->close();
 ?>

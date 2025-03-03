@@ -84,11 +84,7 @@ $kelompok_publikasi = [];
 while ($publikasi = $resultpublikasi->fetch_assoc()) {
     $kelompok_publikasi[$publikasi['tahun_publikasi']][] = $publikasi;}
 
-// Filter Container Publikasi Berdasarkan Tahun--
-$resulttahun = $conn->query("SELECT tahun_publikasi, COUNT(*) AS jumlah_publikasi 
-               FROM publikasi_peneliti GROUP BY tahun_publikasi ORDER BY tahun_publikasi DESC WHERE id_peneliti = $id_peneliti");
-
-?>
+ ?>
 
 
 <!DOCTYPE html>
