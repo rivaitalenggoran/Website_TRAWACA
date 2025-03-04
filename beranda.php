@@ -1,80 +1,4 @@
-<?php
-// Memulai session
-session_start();
-
-include 'config/database.php';
-
-// Gunakan PDO untuk semua query jika konsisten
-$queryBeranda = "SELECT * FROM beranda";
-$stmtBeranda = $pdo->query($queryBeranda);
-$tentang = $stmtBeranda->fetch(PDO::FETCH_ASSOC);
-
-// Ambil data lainnya
-$queryProfil = "SELECT nama_peneliti, bidang_minat FROM profil_peneliti";
-$stmtProfil = $pdo->query($queryProfil);
-
-$queryKontributor = "SELECT * FROM kontributor";
-$stmtKontributor = $pdo->query($queryKontributor);
-
-$queryKontak = "SELECT * FROM kontak_trawaca";
-$stmtKontak = $pdo->query($queryKontak);
-
-$queryKegiatan = "SELECT * FROM kegiatan";
-$stmtKegiatan = $pdo->query($queryKegiatan);
-
-$querySahabat = "SELECT * FROM sahabat_trawaca";
-$stmtSahabat = $pdo->query($querySahabat);
-
-// Cek apakah ada request untuk mengganti bahasa
-if (isset($_GET['lang'])) {
-    $_SESSION['lang'] = $_GET['lang'];
-}
-
-// Default bahasa = Indonesia jika belum ada sesi bahasa yang dipilih
-$lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'id';
-
-// Ambil teks untuk bagian header_1
-$query = "SELECT header, sub_header 
-        FROM beranda_translation 
-        WHERE language_code = :lang AND section_name = 'header_1'";
-$stmt = $pdo->prepare($query);
-$stmt->execute(['lang' => $lang]);
-$header1 = $stmt->fetch(PDO::FETCH_ASSOC);
-
-// Ambil teks untuk bagian header_2
-$query = "SELECT header, sub_header 
-        FROM beranda_translation 
-        WHERE language_code = :lang AND section_name = 'header_2'";
-$stmt = $pdo->prepare($query);
-$stmt->execute(['lang' => $lang]);
-$header2 = $stmt->fetch(PDO::FETCH_ASSOC);
-
-// Ambil teks untuk bagian header_3
-$query = "SELECT header, sub_header 
-        FROM beranda_translation 
-        WHERE language_code = :lang AND section_name = 'header_3'";
-$stmt = $pdo->prepare($query);
-$stmt->execute(['lang' => $lang]);
-$header3 = $stmt->fetch(PDO::FETCH_ASSOC);
-
-// Ambil teks untuk bagian header_4
-$query = "SELECT header, sub_header 
-        FROM beranda_translation 
-        WHERE language_code = :lang AND section_name = 'header_4'";
-$stmt = $pdo->prepare($query);
-$stmt->execute(['lang' => $lang]);
-$header4 = $stmt->fetch(PDO::FETCH_ASSOC);
-
-// Ambil teks untuk bagian header_5
-$query = "SELECT header, sub_header 
-        FROM beranda_translation 
-        WHERE language_code = :lang AND section_name = 'header_5'";
-$stmt = $pdo->prepare($query);
-$stmt->execute(['lang' => $lang]);
-$header5 = $stmt->fetch(PDO::FETCH_ASSOC);
-
-
-?>
+<?php include 'backend/beranda_backend.php'?>
 
 
 <!DOCTYPE html>
@@ -130,6 +54,8 @@ $header5 = $stmt->fetch(PDO::FETCH_ASSOC);
           <li class="nav-item dropdown">
 
 
+
+
           <!-- buat ini bob, navigasinya -->
           <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
           Select Option
@@ -158,8 +84,8 @@ $header5 = $stmt->fetch(PDO::FETCH_ASSOC);
           <img src="trawaca_bootstrap/trawaca_400_8.png" class="img-fluid mx-auto d-block">
         </div>
         <div class="col-md-6">
-          <h2 class="display-4 mt-5 mb-2" style="color:#E31245; text-shadow: 1px 2px 2px #777777;"><?php echo $header1['header']; ?></h2>
-          <p class="lead mb-5"><?php echo $header1['sub_header']; ?></p>
+          <h2 class="display-4 mt-5 mb-2" style="color:#E31245; text-shadow: 1px 2px 2px #777777;"><?php echo $headerData['header_1']['header']; ?></h2>
+          <p class="lead mb-5"><?php echo $headerData['header_1']['sub_header']; ?></p>
         </div>
       </div>
     </div>
@@ -169,53 +95,62 @@ $header5 = $stmt->fetch(PDO::FETCH_ASSOC);
   <div class="container">
     <div class="row">
       <div class="col-md-8 col-sm-12 mb-5">
-        <h2 style="color:#E31245; text-shadow: 1px 1px 1px #dddddd;"><?php echo $header2['header']; ?></h2>
+        <h2 style="color:#E31245; text-shadow: 1px 1px 1px #dddddd;"><?php echo $headerData['header_2']['header']; ?></h2>
         <hr>
-          <p><?= $tentang['tentang_trawaca'] ?></p>
+          <p><?php echo $headerData['header_2']['sub_header']; ?></p>
       </div>
       <div class="col-md-4 col-sm-12 mb-5 sijisiji">
-        <h2 style="color:#E31245; text-shadow: 1px 1px 1px #dddddd;"><?php echo $header3['header']; ?></h2>
+        <h2 style="color:#E31245; text-shadow: 1px 1px 1px #dddddd;"><?php echo $headerData['header_3']['header']; ?></h2>
         <hr>
-        <h4><b><?php echo $header3['sub_header']; ?></b></h4>
+        <h4><b><?php echo $headerData['header_4']['header']; ?></b></h4>
         <p class="abuabu">
-        <?php while ($profil = $stmtProfil->fetch(PDO::FETCH_ASSOC)) { ?>
-            <strong><?= $profil['nama_peneliti'] ?></strong><br>
-            <?= $profil['bidang_minat'] ?><br>
-          <?php } ?>
+        <?php
+              foreach ($penelitiBahasa as $data) { ?>
+                  <strong><?= $data['nama_peneliti'] ?></strong><br>
+                  <?= $data['bidang_minat'] ?><br>
+        <?php }?>
+
         </p>
-        <h4><b>Kontributor</b></h4>
+        <h4><b><?php echo $headerData['header_5']['header']; ?></b></h4>
         <p class="abuabu">
           <?php while ($kontributor = $stmtKontributor->fetch(PDO::FETCH_ASSOC)) { ?>
             <?= $kontributor['nama_kontributor'] ?><span class="cilik pupus"> :: <?= $kontributor['semester_kontributor'] ?></span><br>
           <?php } ?>
         </p>
-        <strong>Kontak Kami</strong>
+        <strong><?php echo $headerData['header_6']['header']; ?></strong>
         <?php while ($kontak = $stmtKontak->fetch(PDO::FETCH_ASSOC)) { ?>
-          <a href=<?= $kontak['link_kontak'] ?>><?= $kontak['nama_kontak'] ?></a><br>
+          <a  href=mailto:<?= $kontak['link_kontak'] ?>><?= $kontak['nama_kontak'] ?></a><br>
         <?php } ?>
       </div>
     </div>
     <!-- /.row -->
     <div class="row">
       <div class="col-md-12 mt-2 mb-5">
-        <h2 style="color:#E31245; text-shadow: 1px 1px 1px #dddddd;"><?php echo $header4['header']; ?></h2>
+        <h2 style="color:#E31245; text-shadow: 1px 1px 1px #dddddd;"><?php echo $headerData['header_7']['header']; ?></h2>
           <hr>
-          <?php while ($kegiatan = $stmtKegiatan->fetch(PDO::FETCH_ASSOC)) { ?>
-          <div class="row">
-            <div class="col-md-4 mb-3">
-              <div class="card h-100">
-                <img class="card-img-top" src="<?= $kegiatan['gambar_kegiatan_luaran'] ?>" alt="">
-                <div class="card-body">
-                  <h4 class="card-title"><?= $kegiatan['nama_kegiatan_luaran'] ?></h4>
-                  <p class="card-text"><?= $kegiatan['deskripsi_kegiatan_luaran'] ?></p>
-                  <p class="cilik"><?= $kegiatan['waktu_kegiatan_luaran'] ?></p>
-                </div>
-                <div class="card-footer">
-                  <a href="<?= $kegiatan['link_kegiatan_luaran'] ?>" class="btn btn-danger"><?= $kegiatan['nama_link'] ?></a>
+
+
+          <?php 
+            while ($kegiatan = $stmtKegiatan->fetch(PDO::FETCH_ASSOC)) { ?>
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <div class="card h-100">
+                    <img class="card-img-top" src="<?= $kegiatan['gambar_kegiatan_luaran'] ?>" alt="">
+                    <div class="card-body">
+                      <h4 class="card-title"><?= $kegiatan['nama_kegiatan_luaran'] ?></h4>
+                      <p class="card-text"><?= $kegiatan['deskripsi_kegiatan_luaran'] ?></p>
+                      <p class="cilik"><?= $kegiatan['waktu_kegiatan_luaran'] ?></p>
+                    </div>
+                    <div class="card-footer">
+                      <a href="<?= $kegiatan['link_kegiatan_luaran'] ?>" class="btn btn-danger"><?= $kegiatan['nama_link'] ?></a>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          <?php } ?>
+            <?php } ?>
+
+
+
           <div class="col-md-4 mb-3">
             <div class="card h-100">
               <img class="card-img-top" src="trawaca_bootstrap/kegiatan.png" alt="">
@@ -225,6 +160,7 @@ $header5 = $stmt->fetch(PDO::FETCH_ASSOC);
               </div>
             </div>
           </div>
+
         </div>  
       </div>
     </div>
@@ -232,7 +168,7 @@ $header5 = $stmt->fetch(PDO::FETCH_ASSOC);
 
     <div class="row">
       <div class="col-md-12 mb-5">
-        <h2 style="color:#E31245; text-shadow: 1px 1px 1px #dddddd;"><?php echo $header5['header']; ?></h2>
+        <h2 style="color:#E31245; text-shadow: 1px 1px 1px #dddddd;"><?php echo $headerData['header_8']['header']; ?></h2>
         <hr>
         <p class="card-text sepasi">
         <?php while ($sahabat = $stmtSahabat->fetch(PDO::FETCH_ASSOC)) { ?>

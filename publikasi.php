@@ -1,49 +1,10 @@
-<?php
-global $conn;
-include 'config/database.php';
+<?php include 'backend/publikasi_backend.php' ?>
 
-// Peneliti --------------------------------------------
-$resultprofil = $conn->query("SELECT id_peneliti, nama_peneliti, bidang_minat FROM profil_peneliti");
-
-// Array Profil Peneliti
-$profiles = [];
-while ($row = $resultprofil->fetch_assoc()) {
-    $profiles[] = $row;
-}
-
-// ID Peneliti
-$id_peneliti = isset($_GET['id_peneliti']) ? $_GET['id_peneliti'] : (isset($profiles[0]['id_peneliti']) ? $profiles[0]['id_peneliti'] : null);
-
-
-//Tautan Peneliti --------------------------------------
-$resulttautan = $conn->query("SELECT * FROM tautan_peneliti");
-
-// Array Tautan Peneliti
-$tautan = [];
-while ($row = $resulttautan->fetch_assoc()) {
-    $tautan[] = $row;
-}
-
-
-//Publikasi Peneliti -----------------------------------
-$resultpublikasi = $conn->query("SELECT tahun_publikasi,nama_publikasi,
-                   nama_peneliti,hari_tanggal_publikasi,tempat_publikasi,tautan_publikasi FROM publikasi_peneliti");
-
-// Array Publikasi
-$kelompok_publikasi = [];
-while ($publikasi = $resultpublikasi->fetch_assoc()) {
-    $kelompok_publikasi[$publikasi['tahun_publikasi']][] = $publikasi;}
-
-// Filter Container Publikasi Berdasarkan Tahun--
-$resulttahun = $conn->query("SELECT tahun_publikasi, COUNT(*) AS jumlah_publikasi 
-               FROM publikasi_peneliti GROUP BY tahun_publikasi ORDER BY tahun_publikasi DESC");
-
-?>
 
 
 <!DOCTYPE html>
 <!-- saved from url=(0032)https://trawaca.id/publikasi.php -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html lang="<?php echo $lang; ?>"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -106,7 +67,7 @@ $resulttahun = $conn->query("SELECT tahun_publikasi, COUNT(*) AS jumlah_publikas
 <div class="container">
     <div class="row mb-5" style="margin-top:35px;">
         <div class="col-md-8 col-sm-12">
-            <h2 style="color:#E31245; text-shadow: 1px 1px 1px #dddddd;">Publikasi Penelitian Trawaca</h2>
+            <h2 style="color:#E31245; text-shadow: 1px 1px 1px #dddddd;"><?php echo $headerData['header_1']['header']; ?></h2>
             <hr>
             <?php foreach ($kelompok_publikasi as $tahun => $publikasi_tahun) {?>
                         <div class="card">
@@ -120,7 +81,7 @@ $resulttahun = $conn->query("SELECT tahun_publikasi, COUNT(*) AS jumlah_publikas
                                     <?= $publikasi['hari_tanggal_publikasi']?><br>
                                     <?= $publikasi['tempat_publikasi']?> <br>
                                 </p>
-                                <a href="<?= $publikasi['tautan_publikasi']?>" class="btn btn-outline-danger btn-sm" target="_blank">Tautan</a>
+                                <a href="<?= $publikasi['tautan_publikasi']?>" class="btn btn-outline-danger btn-sm" target="_blank"><?php echo $headerData['header_1']['sub_header']; ?></a>
                                 <hr>
                                 <?php } ?>
                             </div>
@@ -134,12 +95,12 @@ $resulttahun = $conn->query("SELECT tahun_publikasi, COUNT(*) AS jumlah_publikas
         <div class="col-md-4 col-sm-12 sijisiji">
             <h2>&nbsp;</h2>
             <hr>
-            <h4><b>Profil Peneliti</b></h4>
+            <h4><b><?php echo $headerData['header_2']['header']; ?></b></h4>
             <p class="abuabu">
             <div>
                 <?php foreach ($profiles as $profile): ?>
                     <a class="button" href="profil.php?id_peneliti=<?= $profile['id_peneliti']; ?>">
-                        <strong><?= $profile['nama_peneliti']; ?></strong>
+                        <strong><?=  $profile['nama_peneliti']; ?></strong>
                     </a><br>
                 <?= $profile['bidang_minat']; ?><br>
                     <?php foreach ($tautan as $link): ?>
@@ -185,8 +146,3 @@ $resulttahun = $conn->query("SELECT tahun_publikasi, COUNT(*) AS jumlah_publikas
                 content: attr(data-content);
             }
         </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>
-
-<?php
-// Tutup koneksi database
-$conn->close();
-?>

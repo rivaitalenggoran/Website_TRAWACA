@@ -1,94 +1,10 @@
 <?php
-global $conn;
-include 'config/database.php';
-
-// Peneliti-------------------------------------------------
-$resultprofil = $conn->query("SELECT id_peneliti, nama_peneliti, bidang_minat, institusi_peneliti, email_peneliti, keterangan_tambahan FROM profil_peneliti");
-// Simpan hasil dalam array
-$profiles = [];
-while ($row = $resultprofil->fetch_assoc()) {
-    $profiles[] = $row;
-}
-
-// ID Peneliti----------------------------------------------
-$id_peneliti = isset($_GET['id_peneliti']) ? $_GET['id_peneliti'] : (isset($profiles[0]['id_peneliti']) ? $profiles[0]['id_peneliti'] : null);
-
-
-// Ambil data Profil dari berdasarkan ID
-$selected_profile = null;
-foreach ($profiles as $profile) {
-    if ($profile['id_peneliti'] == $id_peneliti) {
-        $selected_profile = $profile;
-        break;
-    }
-}
-
-//Tautan Peneliti --------------------------------------
-$resulttautan = $conn->query("SELECT id_peneliti,nama_tautan,link_tautan FROM tautan_peneliti");
-
-// Array Tautan Peneliti
-$tautan = [];
-while ($row = $resulttautan->fetch_assoc()) {
-    $tautan[] = $row;
-}
-
-
-//------------------------------------------------------------------------------------------------
-// Pendidikan--------------------------------------------
-$resultpendidikan = $conn->query("SELECT id_peneliti,nama_instansi,gelar,fakultas,tugas_akhir FROM pendidikan_peneliti WHERE id_peneliti = '$id_peneliti'");
-
-// Array Pendidikan
-$pendidikan = [];
-while ($row = $resultpendidikan->fetch_assoc()) {
-    $pendidikan[] = $row;
-}
-
-
-// Pekerjaan----------------------------------------------
-$resultpekerjaan = $conn->query("SELECT id_peneliti,nama_instansi,pekerjaan,waktu_pekerjaan,keterangan_tambahan FROM pekerjaan_peneliti WHERE id_peneliti = '$id_peneliti'");
-
-// Array Pekerjaan
-$pekerjaan = [];
-while ($row = $resultpekerjaan->fetch_assoc()) {
-    $pekerjaan[] = $row;
-}
-
-
-// Minat--------------------------------------------------
-$resultminat = $conn->query("SELECT id_peneliti,nama_minat,subtopik_minat FROM minat_peneliti WHERE id_peneliti = '$id_peneliti'");
-
-// Array Minat
-$minat = [];
-while ($row = $resultminat->fetch_assoc()) {
-    $minat[] = $row;
-}
-
-
-// Karya--------------------------------------------------
-$resultkarya = $conn->query("SELECT id_peneliti,nama_karya,deskripsi_karya,tahun_pengerjaan_karya,tautan_karya,nama_tautan_karya FROM karya_peneliti WHERE id_peneliti = '$id_peneliti'");
-
-// Array Karya--------------------------------------------
-$karya = [];
-while ($row = $resultkarya->fetch_assoc()) {
-    $karya[] = $row;
-}
-
-
-
-//Publikasi Peneliti -------------------------------------
-$resultpublikasi = $conn->query("SELECT id_peneliti,tahun_publikasi,nama_publikasi,
-                   nama_peneliti,hari_tanggal_publikasi,tempat_publikasi,tautan_publikasi FROM publikasi_peneliti WHERE id_peneliti = $id_peneliti");
-
-// Array Publikasi
-$kelompok_publikasi = [];
-while ($publikasi = $resultpublikasi->fetch_assoc()) {
-    $kelompok_publikasi[$publikasi['tahun_publikasi']][] = $publikasi;}
-
- ?>
+include 'backend/profil_backend.php'
+?>
 
 
 <!DOCTYPE html>
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html lang="<?php echo $lang; ?>"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
