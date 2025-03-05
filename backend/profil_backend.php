@@ -1,17 +1,21 @@
 <?php
+
 session_start();
+
 
 include(__DIR__ . '/../config/database.php');
 
-// cek perubahan bahasa
+
+// Cek Perubahan Bahasa-----------------------------------------------------
 if (isset($_GET['lang'])) {
     $_SESSION['lang'] = $_GET['lang'];}
   
-  // inisisasi bahasa default
+
+// Inisisasi Bahasa Default-------------------------------------------------
   $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'id';
 
   
-// Peneliti --------------------------------------------
+// Peneliti ----------------------------------------------------------------
 $queryPeneliti = "
     SELECT 
         pp.id_peneliti,
@@ -29,21 +33,19 @@ $queryPeneliti = "
 $stmtPeneliti = $pdo->prepare($queryPeneliti);
 $stmtPeneliti->execute(['lang' => $lang]);
 $profiles = $stmtPeneliti->fetchAll(PDO::FETCH_ASSOC);
-
 $profile = [];
 foreach ($profiles as $rowprofile) {
     $profile[] = $rowprofile;
 }
 
 
-// ID Peneliti
+// ID Peneliti-----------------------------------------------------------------
 $id_peneliti = isset($_GET['id_peneliti']) 
     ? $_GET['id_peneliti'] 
     : (!empty($profile) ? $profile[0]['id_peneliti'] : null);
+   
 
-    
-
-// Ambil data Profil dari berdasarkan ID
+// Ambil Data Profil berdasarkan ID--------------------------------------------
 $selected_profile = null;
 foreach ($profiles as $profile) {
     if ($profile['id_peneliti'] == $id_peneliti) {
@@ -52,15 +54,14 @@ foreach ($profiles as $profile) {
     }
 }
 
-//Tautan Peneliti --------------------------------------
+
+// Tautan Peneliti -------------------------------------------------------------
 $queryTautan = "SELECT * FROM tautan_peneliti";
 $stmtTautan = $pdo->query($queryTautan);
 $tautan = $stmtTautan->fetchAll(PDO::FETCH_ASSOC);
 
 
-
-// //------------------------------------------------------------------------------------------------
-// // Pendidikan--------------------------------------------
+// Pendidikan-------------------------------------------------------------------
 $queryPendidikan = "
     SELECT 
         id_peneliti,
@@ -80,8 +81,7 @@ $stmtPendidikan->execute(['lang' => $lang]);
 $pendidikan = $stmtPendidikan->fetchAll(PDO::FETCH_ASSOC);
 
 
-
-// // Pekerjaan----------------------------------------------
+// Pekerjaan--------------------------------------------------------------------
 $queryPekerjaan = "
     SELECT 
         id_peneliti,
@@ -101,8 +101,7 @@ $stmtPekerjaan->execute(['lang' => $lang]);
 $pekerjaan = $stmtPekerjaan->fetchAll(PDO::FETCH_ASSOC);
 
 
-
-// // // Minat--------------------------------------------------
+// Minat--------------------------------------------------------------------------
 $queryMinat = "
     SELECT 
         id_peneliti,
@@ -119,7 +118,8 @@ $stmtMinat = $pdo->prepare($queryMinat);
 $stmtMinat->execute(['lang' => $lang]);
 $minat = $stmtMinat->fetchAll(PDO::FETCH_ASSOC);
 
-// // Karya--------------------------------------------------
+
+// Karya---------------------------------------------------------------------------
 $queryKarya = "
     SELECT 
         ky.id_peneliti,
@@ -140,7 +140,7 @@ $stmtKarya->execute(['lang' => $lang]);
 $karya = $stmtKarya->fetchAll(PDO::FETCH_ASSOC);
 
 
-// //Publikasi Peneliti -----------------------------------
+// //Publikasi Peneliti ----------------------------------------------------------
 $queryPublikasi = "
     SELECT 
         id_peneliti,
@@ -155,12 +155,27 @@ $queryPublikasi = "
     WHERE 
         id_peneliti = $id_peneliti
 ";
-
 $stmtPublikasi = $pdo->query($queryPublikasi);
 $publikasi = $stmtPublikasi->fetchAll(PDO::FETCH_ASSOC);
-// Array Publikasi
 $kelompok_publikasi = [];
 foreach ($publikasi as $rowpublikasi) {
-    $kelompok_publikasi[$rowpublikasi['tahun_publikasi']][] = $rowpublikasi;
-}
+    $kelompok_publikasi[$rowpublikasi['tahun_publikasi']][] = $rowpublikasi;}
+
+
+// Navigasi------------------------------------------------------------------------
+$queryNavigasi ="
+SELECT
+    nama_header,
+    header
+FROM
+    navigasi
+WHERE
+    kode_bahasa = :lang";
+$stmtNavigasi = $pdo->prepare($queryNavigasi);
+$stmtNavigasi->execute(['lang' => $lang]);
+$navigasi = $stmtNavigasi->fetchAll(PDO::FETCH_ASSOC);
+$navigasiData = [];
+foreach ($navigasi as $rowsNavigasi) {
+$navigasiData[$rowsNavigasi['nama_header']] = [
+    'header' => $rowsNavigasi['header']];}
 ?>

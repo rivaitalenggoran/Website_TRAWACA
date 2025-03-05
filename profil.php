@@ -24,24 +24,48 @@ include 'backend/profil_backend.php'
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color:#914b34;">
     <div class="container">
-        <a class="navbar-brand" href="https://trawaca.id/profil/mahas/#">TRAWACA</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item " style="">
-                    <a class="nav-link " href="https://trawaca.id/index.php">Beranda              <!--<span class="sr-only">(current)</span>-->
-                    </a>
-                </li>
-                <li class="nav-item " style="">
-                    <a class="nav-link " href="https://trawaca.id/publikasi.php">Publikasi</a>
-                </li>
-                <li class="nav-item active" style="background-color:#E31245;border-bottom: 2px solid white;">
-                    <a class="nav-link active" href="https://trawaca.id/profil/mahas/#">Profil Peneliti</a>
-                </li>
-            </ul>
-        </div>
+      <a class="navbar-brand" href="https://trawaca.id/#">TRAWACA</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+            <a class="nav-link active" href="beranda.php"><?php echo $navigasiData['navigasi_beranda']['header']; ?></a>
+          </li>
+          <li class="nav-item " style="">
+            <a class="nav-link " href="publikasi.php"><?php echo $navigasiData['navigasi_publikasi']['header']; ?></a>
+          </li>
+            <li class="nav-item " style="">
+                <a class="nav-link" href="admin.php">Admin</a>
+            </li>
+            <li class="nav-item active" style="background-color:#E31245;border-bottom: 2px solid white;">
+            <a class="nav-link " href="profil.php">Profil</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="https://trawaca.id/#" role="button" aria-haspopup="true" aria-expanded="false"><?php echo $navigasiData['navigasi_aplikasi']['header']; ?></a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="https://trawaca.id/ocrjawa">OCR Cakra</a>
+              <a class="dropdown-item" href="https://trawaca.id/anotasi">Anotasi Aksara Jawa</a>
+              <a class="dropdown-item" href="https://trawaca.id/sinau">Belajar Aksara Jawa</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="https://trawaca.id/asankey.php">Diagram Sankey Naskah Jawa</a>
+              <div class="dropdown-divider"></div>
+              <span class="cilik pupus">&nbsp;&nbsp;::: Purwarupa</span>
+              <a class="dropdown-item" href="https://trawaca.id/hapusgbr">Pisahkan Ilustrasi Naskah</a>
+            </div>    
+          </li>
+          <li class="nav-item dropdown">
+          <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+          <?php echo $navigasiData['navigasi_bahasa']['header']; ?>
+          </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="beranda.php?lang=id">Indonesia</a></li>
+                <li><a class="dropdown-item" href="beranda.php?lang=en">English</a></li>
+                <li><a class="dropdown-item" href="beranda.php?lang=jw">Jawa</a></li>
+              </ul>  
+          </li>
+        </ul>
+      </div>
     </div>
 </nav>
 
@@ -175,6 +199,9 @@ include 'backend/profil_backend.php'
     </div>
 </div>
 <?php endif; ?>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Footer -->
 <footer class="py-2 bg-dark">

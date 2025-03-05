@@ -2,16 +2,20 @@
 
 session_start();
 
+
 include(__DIR__ . '/../config/database.php');
 
-// cek perubahan bahasa
+
+// Cek Perubahan Bahasa-----------------------------------------------------
 if (isset($_GET['lang'])) {
   $_SESSION['lang'] = $_GET['lang'];}
 
-// inisisasi bahasa default
+
+// Inisisasi Bahasa Default--------------------------------------------------
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'id';
 
-// peneliti
+
+// Peneliti------------------------------------------------------------------
 $queryPeneliti = "
     SELECT 
         pp.nama_peneliti, 
@@ -21,21 +25,27 @@ $queryPeneliti = "
     JOIN 
         profil_peneliti_bahasa ppb ON pp.id_peneliti = ppb.id_peneliti
     WHERE 
-        ppb.kode_bahasa = :lang
-";
+        ppb.kode_bahasa = :lang";
 $stmtPeneliti = $pdo->prepare($queryPeneliti);
 $stmtPeneliti->execute(['lang' => $lang]);
 $penelitiBahasa = $stmtPeneliti->fetchAll(PDO::FETCH_ASSOC);
 
-// kontributor
+
+// Kontributor-----------------------------------------------------------------
 $queryKontributor = "SELECT * FROM kontributor";
 $stmtKontributor = $pdo->query($queryKontributor);
 
-// kontak
-$queryKontak = "SELECT * FROM kontak_trawaca";
+
+// Kontak----------------------------------------------------------------------
+$queryKontak = "
+    SELECT 
+        * 
+    FROM 
+        kontak_trawaca";
 $stmtKontak = $pdo->query($queryKontak);
 
-// kegiatan
+
+// Kegiatan--------------------------------------------------------------------
 $queryKegiatan = "
     SELECT
         kl.gambar_kegiatan_luaran,
@@ -50,12 +60,12 @@ $queryKegiatan = "
         kegiatan_luaran_translations klt
         ON kl.id_kegiatan = klt.id_kegiatan
     WHERE
-        klt.bahasa_kode = :lang
-";
+        klt.bahasa_kode = :lang";
 $stmtKegiatan = $pdo->prepare($queryKegiatan);
 $stmtKegiatan->execute(['lang' => $lang]);
 
-// sahabat
+
+// Sahabat----------------------------------------------------------------------
 $querySahabat = "
     SELECT 
         sh.nama_sahabat, 
@@ -65,23 +75,44 @@ $querySahabat = "
     JOIN 
         sahabat_trawaca_translate sht ON sh.id_sahabat = sht.id_sahabat
     WHERE 
-        sht.kode_bahasa = :lang
-";
+        sht.kode_bahasa = :lang";
 $stmtSahabat = $pdo->prepare($querySahabat);
 $stmtSahabat->execute(['lang' => $lang]);
 
 
-// header
-$queryHeader = "SELECT nama_header, header, sub_header 
-          FROM beranda 
-          WHERE kode_bahasa = :lang";
+// Header-------------------------------------------------------------------------
+$queryHeader = "
+    SELECT 
+        nama_header, 
+        header, 
+        sub_header 
+    FROM 
+        beranda 
+    WHERE 
+        kode_bahasa = :lang";
 $stmtHeader = $pdo->prepare($queryHeader);
 $stmtHeader->execute(['lang' => $lang]);
 $headers = $stmtHeader->fetchAll(PDO::FETCH_ASSOC);
-
 $headerData = [];
-foreach ($headers as $row) {
-    $headerData[$row['nama_header']] = [
-        'header' => $row['header'],
-        'sub_header' => $row['sub_header']];}
+foreach ($headers as $rowHeaders) {
+    $headerData[$rowHeaders['nama_header']] = [
+        'header' => $rowHeaders['header'],
+        'sub_header' => $rowHeaders['sub_header']];}
+
+// Navigasi------------------------------------------------------------------------
+$queryNavigasi ="
+    SELECT
+        nama_header,
+        header
+    FROM
+        navigasi
+    WHERE
+        kode_bahasa = :lang";
+$stmtNavigasi = $pdo->prepare($queryNavigasi);
+$stmtNavigasi->execute(['lang' => $lang]);
+$navigasi = $stmtNavigasi->fetchAll(PDO::FETCH_ASSOC);
+$navigasiData = [];
+foreach ($navigasi as $rowsNavigasi) {
+    $navigasiData[$rowsNavigasi['nama_header']] = 
+    ['header' => $rowsNavigasi['header']];}
 ?>
